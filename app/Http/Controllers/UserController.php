@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use mysql_xdevapi\Exception;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 class UserController extends Controller
 {
-    public  function index(Request $request): \Illuminate\Http\JsonResponse
+    public  function index(): \Illuminate\Http\JsonResponse
     {
         try {
             $users = User::paginate(5);
@@ -23,10 +23,13 @@ class UserController extends Controller
     {
 
         try {
-            $user =User::find($id);
+            $user = User::findOrFail($id);
             return response()->success(200, ['data'=> $user]);
-        }catch (Exception $exception) {
-            return response()->error(503, $exception->getMessage(),[]);
+        }catch (ModelNotFoundException $e) {
+            return response()->error(404, 'Failed Retrieve Data', [$e->getMessage()]);
+        }catch (\Exception $exception) {
+            return response()->error(500, $exception->getMessage(), [$exception->getMessage()]);
         }
+
     }
 }

@@ -72,4 +72,5 @@ cp .env.exampe .env
 php artisan migrate
 php artisan db:seed --class=UserSeeder
 php artisan serve
+php artisan test --testsuite=Feature
 ```
